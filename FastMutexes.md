@@ -1,0 +1,1 @@
+We backported fast mutexes from MySQL 5.1 to implement MutexContentionStats. Run configure with **--with-fast-mutexes** to enable this.

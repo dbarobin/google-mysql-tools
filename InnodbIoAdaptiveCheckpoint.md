@@ -1,0 +1,1 @@
+This implements adaptive checkpoints for InnoDB. This feature was first [done by Percona](http://www.mysqlperformanceblog.com/2008/11/13/adaptive-checkpointing). The code in the v4 patch is different but the benefits should be the same. This is enabled by the my.cnf variable _innodb\_adaptive\_checkpoint_.

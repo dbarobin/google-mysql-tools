@@ -1,0 +1,7 @@
+InnoDB starts a thread to perform background IO operations. This has operations that run once per second, once per 10 seconds and only when the server is idle. This is implemented with a _for_ loop that iterates 10 times. Each time through the loop, the thread sleeps for 1 second unless too much work was done on the previous iteration of the loop. At the end of 10 iterations, the once per 10 seconds tasks are run.
+
+It is hard to understand the behavior of this loop because the sleep is optional dependent on the amount of work done on the previous iteration of the loop. And there are costs from this complexity. For example, one of the 1 second tasks is to flush the transaction log to disk to match the expected behavior from _innodb\_flush\_log\_at\_trx\_commit=2_. However, when the 1 second loop runs much more frequently than once per second there will be many more fsync calls then expected.
+
+In the v4 patch, the sleep is not optional. Other changes to the main background IO thread make it possible for each loop iteration to do enough work that there is no need to skip the sleep.
+
+In the v4 patch all of the code that submits a large number of async IO requests makes sure that the number of requests does not exceed the number of free slots in the array. Otherwise, the async IO requests block until there are free slots.
